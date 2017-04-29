@@ -3,6 +3,7 @@ use players::Player;
 use players::Players;
 use players::ExplorerData;
 use players::GnomeData;
+use players::Direction;
 use inventory;
 use inventory::Thing;
 use std::io;
@@ -10,6 +11,7 @@ use std::io;
 // 5 by 5 room game board
 pub type Board = [[Room; 5]; 5];
 
+#[derive(PartialEq)]
 enum Wall {
     Solid,
     Opening,
@@ -98,7 +100,7 @@ pub fn display_map(board: &Board, players: &Players) {
         }
     }
     println!();
-    for row in 0..board.len() {        
+    for row in 0..board.len() {
         for col in 0..board[0].len() {
             if col == 0 {
                 match board[row][col].west {
@@ -189,7 +191,14 @@ pub fn scavenge(player: Player, board: &mut Board) -> Player {
 
 // TODO
 pub fn is_opening(room: &Position, wall: &players::Direction, board: &Board) -> bool {
-    false
+    let real_room = pos_to_room(room, board);
+    let target_wall = match wall {
+        &Direction::North => &real_room.north,
+        &Direction::West => &real_room.west,
+        &Direction::South => &real_room.south,
+        &Direction::East => &real_room.east,
+    };
+    *target_wall == Wall::Opening
 }
 
 // TODO
@@ -232,7 +241,7 @@ fn exp_scavenge(data: ExplorerData, board: &mut Board) -> ExplorerData {
     let mut exp = data;
     let pos = players::get_exp_pos(&exp);
     let mut input = String::new();
-    
+
     if room_has_torch(&pos, board) || inventory::exp_has_torch(&exp) {
         let empty = pos_to_room(&pos, board).contents.is_empty();
 
@@ -241,7 +250,7 @@ fn exp_scavenge(data: ExplorerData, board: &mut Board) -> ExplorerData {
             display_room_contents(pos_to_room(&pos, board));
 
             println!("Enter letter command: Pick up [F]ood [C]oins tele[P]orter [T]orch or [D]one");
-            
+
             match io::stdin().read_line(&mut input) {
                 Ok(_) => (),
                 Err(why) => {
