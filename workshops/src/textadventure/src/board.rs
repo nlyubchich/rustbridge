@@ -214,6 +214,10 @@ fn pos_to_room<'a, 'b>(pos: &'a Position, board: &'b Board) -> &'b Room {
     &board[pos.y as usize][pos.x as usize]
 }
 
+fn mut_pos_to_room<'a, 'b>(pos: &'a Position, board: &'b mut Board) -> &'b mut Room {
+     &mut board[pos.y as usize][pos.x as usize]
+}
+
 fn display_room_contents(room: &Room) {
     println!("room contains:");
 
@@ -302,32 +306,68 @@ fn gnome_scavenge(data: GnomeData, board: &mut Board) -> GnomeData {
     gnome
 }
 
-// TODO
 fn room_has_torch(pos: &Position, board: &Board) -> bool {
-    false
+    let real_room = pos_to_room(pos, board);
+    real_room.contents.iter().any(|thing| Thing::Torch == *thing)
 }
 
 // TODO
 fn exp_pick_up_food(exp: &mut ExplorerData, board: &mut Board) {
-    println!("Feature not implemented.")
+    let exp_pos = players::get_exp_pos(exp);
+    let mut room = mut_pos_to_room(&exp_pos, board);
+    let foodPos = room.contents.iter()
+                                .position(|content| content.is_food())
+                                .expect("Food isn't in room!");
+    let food = room.contents.remove(foodPos);
+    exp.things.push(food);
 }
 
 // TODO
 fn exp_eat_food(exp: &mut ExplorerData) {
-    println!("Feature not implemented.")
+    println!("eating food");
+    let mut total_energy = 0;
+    for thing in exp.things.iter() {
+        match thing {
+            &Thing::Food { name: ref name, energy: ref energy } => total_energy = total_energy + energy,
+            _ => {}
+        }
+    }
+    let new_things = exp.things.drain(0..)
+                            .filter(|content| !content.is_food())
+                            .collect();
+    exp.things = new_things;
+    exp.add_energy(total_energy);
 }
 
 // TODO
 fn exp_pick_up_coins(exp: &mut ExplorerData, board: &mut Board) {
-    println!("Feature not implemented.")
+    let exp_pos = players::get_exp_pos(exp);
+    let mut room = mut_pos_to_room(&exp_pos, board);
+    let coinPos = room.contents.iter()
+                                .position(|content| content.is_coin())
+                                .expect("Coin isn't in room!");
+    let coin = room.contents.remove(coinPos);
+    exp.things.push(coin);
 }
 
 // TODO
 fn exp_pick_up_teleporter(exp: &mut ExplorerData, board: &mut Board) {
-    println!("Feature not implemented.")
+    let exp_pos = players::get_exp_pos(exp);
+    let mut room = mut_pos_to_room(&exp_pos, board);
+    let teleporterPos = room.contents.iter()
+                                .position(|content| *content == Thing::Teleporter)
+                                .expect("Teleporter isn't in room!");
+    let teleporter = room.contents.remove(teleporterPos);
+    exp.things.push(teleporter);
 }
 
 // TODO
 fn exp_pick_up_torch(exp: &mut ExplorerData, board: &mut Board) {
-    println!("Feature not implemented.")
+    let exp_pos = players::get_exp_pos(exp);
+    let mut room = mut_pos_to_room(&exp_pos, board);
+    let torchPos = room.contents.iter()
+                                .position(|content| *content == Thing::Torch)
+                                .expect("Torch isn't in room!");
+    let torch = room.contents.remove(torchPos);
+    exp.things.push(torch);
 }

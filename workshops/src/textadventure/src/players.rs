@@ -27,6 +27,12 @@ pub struct ExplorerData {
     pub things: Vec<Thing>
 }
 
+impl ExplorerData {
+    pub fn add_energy(&mut self, energy: i32) {
+        self.energy = self.energy + energy;
+    }
+}
+
 pub struct GnomeData {
     pos: Position,
     energy: i32,
@@ -226,12 +232,21 @@ fn move_lep(data: LeprechaunData, board: &Board) -> LeprechaunData {
     _data
 }
 
-// TODO
 fn teleport_lep(data: &mut LeprechaunData, board: &Board) {
-
+    let x = rand::thread_rng().gen_range(0, 5);
+    let y = rand::thread_rng().gen_range(0, 5);
+    data.pos = Position::new(x, y, board);
 }
 
 fn teleport_exp(data: &mut ExplorerData, board: &Board) -> bool {
+    let has_teleport = data.things.iter().any(|thing| Thing::Teleporter == *thing);
+    if has_teleport {
+        let x = rand::thread_rng().gen_range(0, 5);
+        let y = rand::thread_rng().gen_range(0, 5);
+        data.pos = Position::new(x, y, board);
+        data.energy = data.energy - 5;
+        return true;
+    }
     false
 }
 

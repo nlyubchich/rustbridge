@@ -20,6 +20,21 @@ pub enum Thing {
     MagicWord { word: String, room: Position, wall: Direction },
     FakeWord { word: String }
 }
+impl Thing {
+    pub fn is_food(&self) -> bool {
+        match *self {
+            Thing::Food { name: _, energy: _} => true,
+            _ => false
+        }
+    }
+
+    pub fn is_coin(&self) -> bool {
+        match *self {
+            Thing::Food { name: _, energy: _} => true,
+            _ => false
+        }
+    }
+}
 
 pub fn display_exp_things(exp: &ExplorerData) {
     println!("explorer has:");
@@ -38,7 +53,7 @@ pub fn display_exp_things(exp: &ExplorerData) {
 
 // TODO
 pub fn exp_has_torch(exp: &ExplorerData) -> bool {
-    false
+    exp.things.iter().any(|thing| Thing::Torch == *thing)
 }
 
 // TODO
@@ -112,7 +127,7 @@ fn encounter_explorer(data: ExplorerData, others: &mut Players) -> ExplorerData 
             _occupant
         }
     );
-    
+
     exp
 }
 
@@ -135,7 +150,7 @@ fn encounter_gnome(data: GnomeData, others: &mut Players) -> GnomeData {
             _occupant
         }
     );
-    
+
     gnome
 }
 
@@ -158,7 +173,7 @@ fn encounter_leprechaun(data: LeprechaunData, others: &mut Players) -> Leprechau
             _occupant
         }
     );
-    
+
     lep
 }
 
