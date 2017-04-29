@@ -3,6 +3,7 @@ extern crate rand;
 use board;
 use board::Board;
 use board::Position;
+use board::is_opening;
 use inventory;
 use inventory::Thing;
 use std::io;
@@ -223,31 +224,47 @@ fn move_lep(data: LeprechaunData, board: &Board) -> LeprechaunData {
     teleport_lep(&mut _data, board);
 
     _data
-}   
-
-// TODO
-fn teleport_lep(data: &mut LeprechaunData, board: &Board) {
 }
 
 // TODO
+fn teleport_lep(data: &mut LeprechaunData, board: &Board) {
+
+}
+
 fn teleport_exp(data: &mut ExplorerData, board: &Board) -> bool {
     false
 }
 
-// TODO
 fn move_exp_north(data: &mut ExplorerData, board: &Board) {
+    if is_opening(&data.pos, &Direction::North, board) {
+        data.pos = data.pos.mv(0, -1);
+        data.energy = data.energy - 1;
+        println!("Energy for now: {:?}", data.energy);
+    }
 }
 
-// TODO
 fn move_exp_south(data: &mut ExplorerData, board: &Board) {
+    if is_opening(&data.pos, &Direction::South, board) {
+        data.pos = data.pos.mv(0, 1);
+        data.energy = data.energy - 1;
+        println!("Energy for now: {:?}", data.energy);
+    }
 }
 
-// TODO
 fn move_exp_east(data: &mut ExplorerData, board: &Board) {
+    if is_opening(&data.pos, &Direction::East, board) {
+        data.pos = data.pos.mv(1, 0);
+        data.energy = data.energy - 1;
+        println!("Energy for now: {:?}", data.energy);
+    }
 }
 
-// TODO
 fn move_exp_west(data: &mut ExplorerData, board: &Board) {
+    if is_opening(&data.pos, &Direction::West, board) {
+        data.pos = data.pos.mv(-1, 0);
+        data.energy = data.energy - 1;
+        println!("Energy for now: {:?}", data.energy);
+    }
 }
 
 // TODO

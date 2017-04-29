@@ -151,6 +151,10 @@ impl Position {
 
         Position { x: x, y: y }
     }
+
+    pub fn mv(self, x: i32, y: i32) -> Position {
+        Position { x: self.x+x, y: self.y+y }
+    }
 }
 
 pub fn move_in_bounds(pos: &Position, dx: &i32, dy: &i32, board: &Board) -> bool {
