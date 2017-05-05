@@ -39,6 +39,12 @@ pub struct GnomeData {
     pub things: Vec<Thing>
 }
 
+impl GnomeData {
+    pub fn has_fake_coin(&self) {
+
+    }
+}
+
 pub struct LeprechaunData {
     pos: Position,
     pub things: Vec<Thing>

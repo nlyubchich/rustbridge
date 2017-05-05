@@ -311,7 +311,6 @@ fn room_has_torch(pos: &Position, board: &Board) -> bool {
     real_room.contents.iter().any(|thing| Thing::Torch == *thing)
 }
 
-// TODO
 fn exp_pick_up_food(exp: &mut ExplorerData, board: &mut Board) {
     let exp_pos = players::get_exp_pos(exp);
     let mut room = mut_pos_to_room(&exp_pos, board);
@@ -322,7 +321,6 @@ fn exp_pick_up_food(exp: &mut ExplorerData, board: &mut Board) {
     exp.things.push(food);
 }
 
-// TODO
 fn exp_eat_food(exp: &mut ExplorerData) {
     println!("eating food");
     let mut total_energy = 0;
@@ -339,18 +337,16 @@ fn exp_eat_food(exp: &mut ExplorerData) {
     exp.add_energy(total_energy);
 }
 
-// TODO
 fn exp_pick_up_coins(exp: &mut ExplorerData, board: &mut Board) {
     let exp_pos = players::get_exp_pos(exp);
     let mut room = mut_pos_to_room(&exp_pos, board);
     let coinPos = room.contents.iter()
-                                .position(|content| content.is_coin())
+                                .position(|content| content.is_gold_coin())
                                 .expect("Coin isn't in room!");
     let coin = room.contents.remove(coinPos);
     exp.things.push(coin);
 }
 
-// TODO
 fn exp_pick_up_teleporter(exp: &mut ExplorerData, board: &mut Board) {
     let exp_pos = players::get_exp_pos(exp);
     let mut room = mut_pos_to_room(&exp_pos, board);
@@ -361,7 +357,6 @@ fn exp_pick_up_teleporter(exp: &mut ExplorerData, board: &mut Board) {
     exp.things.push(teleporter);
 }
 
-// TODO
 fn exp_pick_up_torch(exp: &mut ExplorerData, board: &mut Board) {
     let exp_pos = players::get_exp_pos(exp);
     let mut room = mut_pos_to_room(&exp_pos, board);

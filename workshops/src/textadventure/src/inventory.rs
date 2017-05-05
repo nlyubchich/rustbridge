@@ -28,9 +28,17 @@ impl Thing {
         }
     }
 
-    pub fn is_coin(&self) -> bool {
+
+    pub fn is_fake_coin(&self) -> bool {
         match *self {
-            Thing::Food { name: _, energy: _} => true,
+            Thing::FakeCoin { denom: _ } => true,
+            _ => false
+        }
+    }
+
+    pub fn is_gold_coin(&self) -> bool {
+        match *self {
+            Thing::GoldCoin { denom: _} => true,
             _ => false
         }
     }
@@ -177,8 +185,104 @@ fn encounter_leprechaun(data: LeprechaunData, others: &mut Players) -> Leprechau
     lep
 }
 
+fn should_rob_exp(gnome: &mut GnomeData, exp: &mut ExplorerData) -> bool {
+    gnome.things.iter().any(|thing| thing.is_fake_coin()) ||
+        !exp.things.iter().any(|thing| thing.is_gold_coin())
+}
+
+fn ask_player_for_shake_down(gnome: &mut GnomeData, exp: &mut ExplorerData) -> Vec<Thing> {
+    let mut input = String::new();
+    let items : Vec<Thing>;
+    let has_fake_coin = exp.things.iter().any(|thing| thing.is_fake_coin());
+    if has_fake_coin {
+        loop {
+            println!("Enter letter command: Give gnome [E]verything, [G]old coin or [F]ake coin");
+
+            match io::stdin().read_line(&mut input) {
+                Ok(_) => (),
+                Err(why) => {
+                    println!("Failed to read line: {:?}", why);
+                    input.clear();
+                }
+            }
+
+            match input.trim().to_uppercase().chars().nth(0) {
+                Some(command) => {
+                    match command {
+                        'E' => {
+                            items = exp.things.clone();
+                            exp.things = vec![];
+                            break
+                        },
+                        'G' => {
+                            let itemPos = exp.things.iter()
+                                                .position(|thing| thing.is_gold_coin())
+                                                .expect("Gold coin isn't in exp's things!");
+                            let item = exp.things.remove(itemPos);
+                            items = vec![item];
+                            break
+                        },
+                        'F' => {
+                            let itemPos = exp.things.iter()
+                                                .position(|thing| thing.is_fake_coin())
+                                                .expect("Fake coin isn't in exp's things!");
+                            let item = exp.things.remove(itemPos);
+                            items = vec![item];
+                            break
+                        },
+                        _ => println!("Invalid command")
+                    }
+                },
+                None => println!("Ignoring leading whitespace")
+            }
+            input.clear()
+        }
+    } else {
+        println!("Enter letter command: Give gnome [E]verything or [G]old coin");
+        items = vec![]
+    }
+    items
+}
+
 // TODO
 fn shake_down(gnome: &mut GnomeData, exp: &mut ExplorerData) {
+    // if room_has_torch(&pos, board) || inventory::exp_has_torch(&exp) {
+    //     let empty = pos_to_room(&pos, board).contents.is_empty();
+    //
+    //     while !empty {
+    //         inventory::display_exp_things(&exp);
+    //         display_room_contents(pos_to_room(&pos, board));
+    //
+    //         println!("Enter letter command: Pick up [F]ood [C]oins tele[P]orter [T]orch or [D]one");
+    //
+    //         match io::stdin().read_line(&mut input) {
+    //             Ok(_) => (),
+    //             Err(why) => {
+    //                 println!("Failed to read line: {:?}", why);
+    //                 input.clear();
+    //                 continue
+    //             }
+    //         }
+    //
+    //         match input.trim().to_uppercase().chars().nth(0) {
+    //             Some(command) => {
+    //                 match command {
+    //                     'F' => { exp_pick_up_food(&mut exp, board); exp_eat_food(&mut exp) },
+    //                     'C' => exp_pick_up_coins(&mut exp, board),
+    //                     'P' => exp_pick_up_teleporter(&mut exp, board),
+    //                     'T' => exp_pick_up_torch(&mut exp, board),
+    //                     'D' => break,
+    //                     _ => println!("Invalid command")
+    //                 }
+    //             },
+    //             None => println!("Ignoring leading whitespace")
+    //         }
+    //
+    //         input.clear()
+    //     }
+    // } else {
+    //     inventory::display_exp_things(&exp)
+    // }
 }
 
 // TODO
