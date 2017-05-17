@@ -70,6 +70,11 @@ class: middle, left
 ---
 class: middle, left
 
+![gc](img/gc.jpg)
+
+---
+class: middle, left
+
 ## What is Cargo?
 
 * Package manager
@@ -687,11 +692,15 @@ class: middle, left
 ```rust
 let numstr = "6";
 let num = numstr.parse::<i32>();
-println!("num = {:?}", num);
+println!("num = {:?}", num); // num = Ok(6)
 
 let numstr = "florp";
 let num = numstr.parse::<i32>();
-println!("num = {:?}", num);
+println!("num = {:?}", num); // num = Err(
+                             //     ParseIntError {
+                             //         kind: InvalidDigit
+                             //     }
+                             // )
 ```
 
 ???
@@ -724,7 +733,7 @@ let answer = match num {
     Ok(n) => n + 5,
     Err(_) => 0,
 };
-println!("Answer is {}", answer);
+println!("Answer is {}", answer); // Answer is 0
 ```
 
 ???
@@ -793,9 +802,6 @@ class: middle, left
 
 ---
 class: middle, left
-
-## A common problem
-
 ```rust
 fn fizz(num: u32) -> String {
     if num % 3 == 0 {
@@ -804,6 +810,21 @@ fn fizz(num: u32) -> String {
         num.to_string()
     }
 }
+```
+```rust
+   error[E0308]: mismatched types
+     --> <anon>:4:9
+      |
+    4 |         "Fizz"
+      |         ^^^^^^ expected struct `std::string::String`,
+                                    found reference
+      |
+      = note: expected type `std::string::String`
+                 found type `&'static str`
+      = help: here are some functions which might fulfill
+                                    your needs:
+              - .escape_debug()
+                ...
 ```
 
 ???
@@ -1076,6 +1097,11 @@ class: middle, left
 
 ## Just Second More thing: Play Rust
 ![play rust](img/play_rust.png)
+---
+class: middle, left
+
+## Just Third More thing: Community
+![community](img/gitter.png)
 
    </textarea>
     <script src="remark.js" type="text/javascript">
