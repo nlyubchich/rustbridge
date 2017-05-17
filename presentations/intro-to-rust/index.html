@@ -19,27 +19,6 @@ class: middle, center
 * This is Ferris, our unofficial mascot!
 
 ---
-class: middle, center
-
-## 2ND RUSTBRIDGE IN THE WORLD!
-
-<iframe src="globe.html" style="width: 100%; height: 100% ; border: none" />
-
-???
-
-* Welcome to the 2nd Rustbridge IN THE WORLD
-
----
-class: middle, center
-
-![experiment](img/experiment.jpg)
-
-???
-
-* This curriculum is an experiment. It's disorganized and untested.
-* Please take notes about what you liked, didn't like, wished we spent more or less time on, etc -- there will be a survey!
-
----
 class: middle, left
 
 ## Overview
@@ -165,6 +144,7 @@ class: middle, left
 fn main() {
     println!("Hello, world!");
 }
+// Hello, world!
 ```
 
 ???
@@ -225,6 +205,8 @@ class: middle, left
 let name = "ashley";
 let age = 30;
 println!("Hi, {}! You are {} years old.", name, age);
+
+//Hi, ashley! You are 30 years old.
 ```
 
 * Try making more variables and printing them all out in one `println!`
@@ -245,6 +227,36 @@ What happens if you run this:
 let apples = 100;
 apples += 50;
 println!("I have {} apples", apples);
+```
+
+???
+
+* Have someone read the error message
+* Whenever anyone gets an error message, we'll read it out loud and talk about it so everyone can learn!
+
+---
+class: middle, left
+
+## Experiment
+
+What happens if you run this:
+
+```rust
+let apples = 100;
+apples += 50;
+println!("I have {} apples", apples);
+```
+
+```rust
+error[E0384]: re-assignment of immutable variable `apples`
+ --> <anon>:3:1
+  |
+2 | let apples = 100;
+  |     ------ first assignment to `apples`
+3 | apples += 50;
+  | ^^^^^^^^^^^^ re-assignment of immutable variable
+
+error: aborting due to previous error
 ```
 
 ???
@@ -595,10 +607,10 @@ class: middle, left
 let mut instructors = vec!["Carol"];
 
 let a = instructors.pop();
-println!("a is {:?}", a);
+println!("a is {:?}", a); // a is Some("Carol")
 
 let b = instructors.pop();
-println!("b is {:?}", b);
+println!("b is {:?}", b); // b is None
 ```
 
 ???
@@ -819,7 +831,7 @@ class: middle, left
 ```rust
 let v = vec![1, 2, 3, 4, 5];
 let piece = &v[3..];
-println!("piece of v = {:?}", piece);
+println!("piece of v = {:?}", piece); // piece of v = [4, 5]
 ```
 
 ???
@@ -836,11 +848,11 @@ class: middle, left
 let s = String::from("Call me Ishmael blah blah...");
 let part = &s[0..4];
 
-println!("part is '{}'", part);
+println!("part is '{}'", part); // part is 'Call'
 ```
 
 ???
-
+part is 'Call'
 * Vec<T> : &[T] :: String : &str
 * With string slices, indices are bytes, not chars, long story
 
@@ -894,6 +906,35 @@ fn print_vec(v: Vec<i32>) {
 ---
 class: middle, left
 
+```rust
+fn main() {
+    let v = vec![1, 2, 3];
+    print_vec(v);
+    print_vec(v);
+}
+
+fn print_vec(v: Vec<i32>) {
+    println!("v is {:?}", v);
+}
+```
+
+```rust
+error[E0382]: use of moved value: `v`
+ --> <anon>:4:15
+  |
+3 |     print_vec(v);
+  |               - value moved here
+4 |     print_vec(v);
+  |               ^ value used here after move
+  |
+  = note: move occurs because `v` has type `std::vec::Vec<i32>`,
+     which does not implement the `Copy` trait
+
+error: aborting due to previous error
+```
+---
+class: middle, left
+
 ## References
 
 * Let you borrow a resource you don't own
@@ -930,7 +971,7 @@ fn main() {
     let mut v = vec![1, 2, 3];
     change_vec(&mut v[..]);
     change_vec(&mut v[..]);
-    println!("v is {:?}", v);
+    println!("v is {:?}", v); // v is [25, 2, 3]
 }
 
 fn change_vec(v: &mut [i32]) {
@@ -958,6 +999,7 @@ fn main() {
 }
 ```
 
+
 ???
 
 * This won't compile-- look at the error.
@@ -966,6 +1008,31 @@ fn main() {
 * Other languages will let you do this and give you invalid data.
 * Security vulnerabilities!
 
+---
+class: middle, left
+```rust
+fn main() {
+    let mut v = vec![1, 2, 3];
+
+    let f = &v[0];
+    v.clear();
+
+    println!("What would f be? {}", f);
+}
+```
+```Rust
+error[E0502]: cannot borrow `v` as mutable because
+  it is also borrowed as immutable
+ --> <anon>:4:5
+  |
+3 |     let f = &v[0];
+  |              - immutable borrow occurs here
+4 |     v.clear();
+  |     ^ mutable borrow occurs here
+5 |     println!("What would f be? {}", f);
+6 | }
+  | - immutable borrow ends here
+```
 ---
 class: middle, left
 
@@ -1003,6 +1070,12 @@ class: middle, left
 * Rust's stdlib is small and stable
 * Crates can change more rapidly and more radically independently of Rust
 * We're going to be using some crates for our project!
+
+---
+class: middle, left
+
+## Just Second More thing: Play Rust
+![play rust](img/play_rust.png)
 
    </textarea>
     <script src="remark.js" type="text/javascript">
